@@ -1,0 +1,59 @@
+{
+  "name": "fb-discord-webhook",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0"
+  }
+}
+```
+
+**server.js:** (use the code from the artifact I created earlier)
+
+### 2. Deploy on Render
+
+1. Go to your Render dashboard: https://dashboard.render.com/
+2. Click **"New +"** → **"Web Service"**
+3. Connect your GitHub repo
+4. Settings:
+   - **Name**: `fb-discord-webhook`
+   - **Environment**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+   - **Instance Type**: `Free`
+
+5. Add **Environment Variables**:
+```
+   DISCORD_WEBHOOK_URL = your_discord_webhook_url_here
+   VERIFY_TOKEN = any_random_string_you_create
+   APP_SECRET = (get from Facebook App - step 3)
+   PAGE_ACCESS_TOKEN = (get from Facebook - step 4)
+```
+
+6. Click **"Create Web Service"**
+
+### 3. Create Facebook App
+
+1. Go to https://developers.facebook.com/apps
+2. Click **"Create App"** → **"Business"** type
+3. After creation, go to **Settings** → **Basic**
+4. Copy your **App Secret** → add to Render env vars
+
+### 4. Get Page Access Token
+
+1. Go to https://developers.facebook.com/tools/explorer/
+2. Select your app from dropdown
+3. Click **"Generate Access Token"**
+4. Grant permissions: `pages_read_engagement`, `pages_manage_metadata`
+5. Copy the token
+6. Exchange for long-lived token - visit this URL (replace `{your-token}`):
+```
+   https://graph.facebook.com/v18.0/oauth/access_token?grant_type=fb_exchange_token&client_id=YOUR_APP_ID&client_secret=YOUR_APP_SECRET&fb_exchange_token={your-token}
+```
+7. Get your Page token by visiting:
+```
+   https://graph.facebook.com/v18.0/me/accounts?access_token={long-lived-token}
